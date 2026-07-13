@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AEGIS — 페로몬 레조넌스 : 이지스</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;600;700;900&family=Noto+Sans+KR:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0c10;
+    --bg-panel:#12151c;
+    --bg-panel-2:#161a24;
+    --ink:#ece7dd;
+    --ink-dim:#9a9fac;
+    --ink-faint:#5c6270;
+    --gold:#c9a25e;
+    --gold-soft:#8f7a52;
+    --line:rgba(236,231,221,0.09);
+    --line-strong:rgba(236,231,221,0.18);
+
+    --c-abyss:#5568c9;
+    --c-tempest:#8b7bf5;
+    --c-requiem:#84a479;
+    --c-architect:#94a3b3;
+    --c-white:#e4d9f2;
+
+    --serif:'Noto Serif KR', serif;
+    --sans:'Noto Sans KR', sans-serif;
+    --mono:'IBM Plex Mono', monospace;
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;scroll-padding-top:64px;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:var(--sans);
+    line-height:1.7;
+    letter-spacing:-0.01em;
+    overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{background:var(--gold-soft);color:#0a0c10;}
+
+  a{color:inherit;text-decoration:none;}
+  ul{list-style:none;}
+
+  .eyebrow{
+    font-family:var(--mono);
+    font-size:0.72rem;
+    letter-spacing:0.24em;
+    text-transform:uppercase;
+    color:var(--gold);
+    display:inline-flex;
+    align-items:center;
+    gap:10px;
+  }
+  .eyebrow::before{
+    content:"";
+    width:16px;height:1px;
+    background:var(--gold);
+    display:inline-block;
+  }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    position:relative;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:120px 24px 80px;
+    overflow:hidden;
+  }
+  .blob{
+    position:absolute;
+    border-radius:50%;
+    filter:blur(70px);
+    mix-blend-mode:screen;
+    opacity:0.38;
+    will-change:transform;
+  }
+  .blob1{width:420px;height:420px;background:var(--c-abyss);top:8%;left:8%;animation:drift1 26s ease-in-out infinite;}
+  .blob2{width:360px;height:360px;background:var(--c-tempest);top:12%;right:6%;animation:drift2 22s ease-in-out infinite;}
+  .blob3{width:380px;height:380px;background:var(--c-requiem);bottom:6%;left:18%;animation:drift3 30s ease-in-out infinite;}
+  .blob4{width:320px;height:320px;background:var(--c-white);bottom:2%;right:16%;animation:drift1 24s ease-in-out infinite reverse;}
+
+  @keyframes drift1{0%,100%{transform:translate(0,0);}50%{transform:translate(40px,30px);}}
+  @keyframes drift2{0%,100%{transform:translate(0,0);}50%{transform:translate(-35px,25px);}}
+  @keyframes drift3{0%,100%{transform:translate(0,0);}50%{transform:translate(25px,-30px);}}
+
+  .hero-content{position:relative;z-index:2;max-width:760px;}
+  .hero-eyebrow{margin-bottom:28px;}
+  .hero-title{
+    font-family:var(--serif);
+    font-weight:900;
+    font-size:clamp(3.2rem,10vw,6.4rem);
+    letter-spacing:-0.02em;
+    line-height:1;
+    color:var(--ink);
+  }
+  .hero-title span{
+    display:block;
+    font-family:var(--mono);
+    font-weight:500;
+    font-size:clamp(0.85rem,2vw,1rem);
+    letter-spacing:0.5em;
+    color:var(--gold-soft);
+    margin-top:22px;
+  }
+  .hero-tagline{
+    font-family:var(--serif);
+    font-size:clamp(1.05rem,2.4vw,1.3rem);
+    color:var(--ink-dim);
+    margin:34px auto 0;
+    max-width:520px;
+    font-weight:500;
+  }
+  .tag-row{
+    margin-top:38px;
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:10px;
+  }
+  .tag-pill{
+    font-family:var(--mono);
+    font-size:0.72rem;
+    letter-spacing:0.04em;
+    color:var(--ink-dim);
+    border:1px solid var(--line-strong);
+    border-radius:999px;
+    padding:7px 16px;
+  }
+  .scroll-cue{
+    position:absolute;
+    bottom:36px;left:50%;
+    transform:translateX(-50%);
+    width:1px;height:52px;
+    background:linear-gradient(var(--gold-soft), transparent);
+    z-index:2;
+  }
+  .scroll-cue::after{
+    content:"";
+    position:absolute;
+    top:0;left:-2.5px;
+    width:6px;height:6px;
+    border-radius:50%;
+    background:var(--gold);
+    animation:scrolldown 2.2s ease-in-out infinite;
+  }
+  @keyframes scrolldown{0%{top:0;opacity:0;}20%{opacity:1;}100%{top:46px;opacity:0;}}
+
+  /* ---------- NAV ---------- */
+  .dossier-nav{
+    position:sticky;top:0;z-index:50;
+    display:flex;
+    justify-content:center;
+    gap:clamp(14px,3vw,34px);
+    padding:18px 20px;
+    background:rgba(10,12,16,0.82);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+    overflow-x:auto;
+    white-space:nowrap;
+  }
+  .dossier-nav a{
+    font-family:var(--mono);
+    font-size:0.72rem;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--ink-faint);
+    padding-bottom:4px;
+    border-bottom:1px solid transparent;
+    transition:color .3s ease, border-color .3s ease;
+  }
+  .dossier-nav a:hover{color:var(--ink-dim);}
+  .dossier-nav a.active{color:var(--gold);border-color:var(--gold);}
+
+  /* ---------- SECTION SHARED ---------- */
+  main section{
+    max-width:1080px;
+    margin:0 auto;
+    padding:120px 24px;
+  }
+  .sec-head{margin-bottom:56px;max-width:640px;}
+  .sec-head h2{
+    font-family:var(--serif);
+    font-weight:700;
+    font-size:clamp(1.9rem,4vw,2.6rem);
+    margin-top:16px;
+    letter-spacing:-0.01em;
+  }
+  .sec-head p{
+    margin-top:16px;
+    color:var(--ink-dim);
+    font-size:0.98rem;
+  }
+
+  .reveal{opacity:0;transform:translateY(26px);transition:opacity .8s ease, transform .8s ease;}
+  .reveal.is-visible{opacity:1;transform:translateY(0);}
+  @media (prefers-reduced-motion: reduce){
+    .reveal{opacity:1;transform:none;transition:none;}
+    .blob{animation:none;}
+    .scroll-cue::after{animation:none;}
+  }
+
+  /* ---------- OVERVIEW ---------- */
+  .overview-grid{
+    display:grid;
+    grid-template-columns:200px 1fr;
+    gap:40px;
+  }
+  .overview-label{
+    font-family:var(--mono);
+    font-size:0.72rem;
+    letter-spacing:0.16em;
+    color:var(--ink-faint);
+    text-transform:uppercase;
+    padding-top:6px;
+  }
+  .overview-text p{
+    font-size:1.02rem;
+    color:var(--ink);
+    margin-bottom:22px;
+  }
+  .overview-text p:last-child{margin-bottom:0;color:var(--ink-dim);}
+  .overview-text .quote-mark{
+    border-left:2px solid var(--gold-soft);
+    padding-left:20px;
+  }
+
+  /* ---------- SYSTEM ---------- */
+  .system-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:16px;
+  }
+  .sys-card{
+    background:var(--bg-panel);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:28px 26px;
+    transition:border-color .3s ease, transform .3s ease;
+  }
+  .sys-card:hover{border-color:var(--line-strong);transform:translateY(-2px);}
+  .sys-card .code{
+    font-family:var(--mono);
+    font-size:0.68rem;
+    letter-spacing:0.12em;
+    color:var(--gold-soft);
+  }
+  .sys-card h3{
+    font-family:var(--serif);
+    font-size:1.2rem;
+    margin:10px 0 12px;
+    font-weight:700;
+  }
+  .sys-card p{color:var(--ink-dim);font-size:0.92rem;}
+  .sys-card.wide{grid-column:1 / -1;}
+  .imprint-split{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:24px;
+    margin-top:18px;
+  }
+  .imprint-split > div{
+    border-top:1px solid var(--line);
+    padding-top:16px;
+  }
+  .imprint-split h4{
+    font-family:var(--mono);
+    font-size:0.74rem;
+    letter-spacing:0.06em;
+    color:var(--ink);
+    margin-bottom:8px;
+  }
+  .imprint-split p{color:var(--ink-dim);font-size:0.9rem;}
+  @media (max-width:560px){.imprint-split{grid-template-columns:1fr;}}
+
+  /* ---------- RANKS ---------- */
+  .rank-cols{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:56px;
+  }
+  @media (max-width:720px){.rank-cols{grid-template-columns:1fr;gap:48px;}}
+  .rank-col-title{
+    font-family:var(--mono);
+    font-size:0.76rem;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--ink-dim);
+    margin-bottom:22px;
+    padding-bottom:12px;
+    border-bottom:1px solid var(--line);
+  }
+  .rank-row{
+    display:grid;
+    grid-template-columns:56px 1fr;
+    gap:16px;
+    padding:16px 0;
+    border-bottom:1px solid var(--line);
+  }
+  .rank-row:last-child{border-bottom:none;}
+  .rank-badge{
+    font-family:var(--serif);
+    font-weight:700;
+    font-size:1.05rem;
+    color:var(--gold);
+  }
+  .rank-bar-wrap{margin-bottom:8px;height:3px;background:var(--line);border-radius:2px;overflow:hidden;}
+  .rank-bar{height:100%;background:linear-gradient(90deg,var(--gold-soft),var(--gold));border-radius:2px;}
+  .rank-row p{color:var(--ink-dim);font-size:0.88rem;}
+
+  /* ---------- DIVISIONS ---------- */
+  .hq-block{
+    background:var(--bg-panel);
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:32px 30px;
+    margin-bottom:20px;
+  }
+  .hq-block h3{font-family:var(--serif);font-size:1.3rem;margin-bottom:10px;}
+  .hq-block p{color:var(--ink-dim);font-size:0.94rem;}
+
+  .division-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+    gap:18px;
+  }
+  .div-card{
+    --accent:var(--gold);
+    background:var(--bg-panel);
+    border:1px solid var(--line);
+    border-top:3px solid var(--accent);
+    border-radius:10px;
+    padding:26px 24px 28px;
+    transition:box-shadow .35s ease, transform .35s ease;
+  }
+  .div-card:hover{
+    transform:translateY(-3px);
+    box-shadow:0 18px 40px -20px var(--accent);
+  }
+  .div-card .div-name{
+    font-family:var(--serif);
+    font-weight:700;
+    font-size:1.3rem;
+  }
+  .div-card .div-name-en{
+    display:block;
+    font-family:var(--mono);
+    font-size:0.68rem;
+    letter-spacing:0.16em;
+    color:var(--accent);
+    margin-top:6px;
+    text-transform:uppercase;
+  }
+  .div-card .div-chief{
+    font-family:var(--mono);
+    font-size:0.72rem;
+    color:var(--ink-faint);
+    margin-top:14px;
+  }
+  .div-card .div-desc{
+    margin-top:14px;
+    color:var(--ink-dim);
+    font-size:0.9rem;
+  }
+  .div-card ul{margin-top:16px;display:flex;flex-direction:column;gap:8px;}
+  .div-card li{
+    font-size:0.84rem;
+    color:var(--ink);
+    padding-left:14px;
+    position:relative;
+  }
+  .div-card li::before{
+    content:"";
+    position:absolute;left:0;top:8px;
+    width:5px;height:5px;border-radius:50%;
+    background:var(--accent);
+  }
+  .div-card .div-env{
+    margin-top:18px;
+    padding-top:14px;
+    border-top:1px solid var(--line);
+    font-size:0.82rem;
+    font-style:italic;
+    color:var(--ink-faint);
+  }
+
+  /* ---------- FOUNDERS ---------- */
+  .founder-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+    gap:18px;
+  }
+  .founder-card{
+    --accent:var(--gold);
+    position:relative;
+    background:var(--bg-panel);
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:30px 22px 26px;
+    text-align:center;
+    overflow:hidden;
+    transition:transform .35s ease, border-color .35s ease;
+  }
+  .founder-card:hover{transform:translateY(-4px);border-color:var(--accent);}
+  .aura{
+    position:relative;
+    width:96px;height:96px;
+    margin:0 auto 20px;
+  }
+  .aura .ring{
+    position:absolute;inset:0;
+    border-radius:50%;
+    border:1px solid var(--accent);
+    opacity:0.5;
+    animation:pulse 3.6s ease-in-out infinite;
+  }
+  .aura .ring.r2{inset:10px;animation-delay:.5s;}
+  .aura .ring.r3{inset:20px;animation-delay:1s;}
+  .aura svg{
+    position:absolute;inset:26px;
+    width:44px;height:44px;
+    stroke:var(--accent);
+    fill:none;
+    stroke-width:1.4;
+  }
+  @keyframes pulse{
+    0%,100%{transform:scale(1);opacity:0.35;}
+    50%{transform:scale(1.08);opacity:0.75;}
+  }
+  .founder-code{
+    font-family:var(--serif);
+    font-weight:700;
+    font-size:1.15rem;
+  }
+  .founder-code-en{
+    display:block;
+    font-family:var(--mono);
+    font-size:0.66rem;
+    letter-spacing:0.14em;
+    color:var(--accent);
+    margin-top:5px;
+    text-transform:uppercase;
+  }
+  .founder-role{
+    margin-top:12px;
+    font-family:var(--mono);
+    font-size:0.7rem;
+    color:var(--ink-faint);
+  }
+  .founder-ability{
+    display:inline-block;
+    margin-top:12px;
+    font-size:0.72rem;
+    padding:5px 12px;
+    border:1px solid var(--line-strong);
+    border-radius:999px;
+    color:var(--ink-dim);
+  }
+  .founder-scent{
+    margin-top:14px;
+    font-size:0.82rem;
+    font-style:italic;
+    color:var(--accent);
+  }
+  .founder-blurb{
+    margin-top:12px;
+    font-size:0.84rem;
+    color:var(--ink-dim);
+  }
+
+  /* ---------- FOOTER ---------- */
+  footer{
+    padding:90px 24px 70px;
+    text-align:center;
+    border-top:1px solid var(--line);
+  }
+  .stamp{
+    display:inline-flex;
+    flex-direction:column;
+    gap:14px;
+    align-items:center;
+  }
+  .stamp .eyebrow{justify-content:center;}
+  footer .closing{
+    font-family:var(--serif);
+    font-size:clamp(1.2rem,2.6vw,1.6rem);
+    color:var(--ink);
+    max-width:520px;
+    font-weight:600;
+  }
+  footer .subline{
+    font-family:var(--mono);
+    font-size:0.7rem;
+    letter-spacing:0.2em;
+    color:var(--ink-faint);
+    text-transform:uppercase;
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <span class="blob blob1"></span>
+  <span class="blob blob2"></span>
+  <span class="blob blob3"></span>
+  <span class="blob blob4"></span>
+  <div class="hero-content">
+    <div class="eyebrow hero-eyebrow">CLASSIFIED ARCHIVE · AEGIS</div>
+    <h1 class="hero-title">이지스<span>PHEROMONE RESONANCE : AEGIS</span></h1>
+    <p class="hero-tagline">게이트라는 재앙 앞에서, 최초의 각성자 5인이 세운<br>인류 최후의 방벽이자 안식처.</p>
+    <div class="tag-row">
+      <span class="tag-pill">모던 판타지</span>
+      <span class="tag-pill">각성자 · 센티넬</span>
+      <span class="tag-pill">가이드 페로몬</span>
+      <span class="tag-pill">SF 히로익 로맨스</span>
+      <span class="tag-pill">기관물</span>
+    </div>
+  </div>
+  <div class="scroll-cue"></div>
+</div>
+
+<nav class="dossier-nav">
+  <a href="#overview">개요</a>
+  <a href="#system">시스템</a>
+  <a href="#gate">게이트</a>
+  <a href="#ranks">등급</a>
+  <a href="#divisions">부서</a>
+  <a href="#founders">창설자</a>
+</nav>
+
+<main>
+
+  <section id="overview">
+    <div class="sec-head reveal">
+      <div class="eyebrow">WORLD FILE · 01</div>
+      <h2>세계관 개요</h2>
+    </div>
+    <div class="overview-grid reveal">
+      <div class="overview-label">SUMMARY</div>
+      <div class="overview-text">
+        <p>정체불명의 재앙 <strong>'게이트(Gate)'</strong>와 함께 나타난 각성자 <strong>'센티넬(Sentinel)'</strong>들. 압도적인 위협으로부터 시민을 지키고, 능력의 부작용에 시달리는 각성자들의 안전을 지키기 위해 최초의 각성자 5인이 세운 인류 최후의 방벽이자 수호 기관, 그것이 바로 이지스다.</p>
+        <p class="quote-mark">철저한 사명감과 프로페셔널함이 빛나는 헌신적인 엘리트 기관. 하지만 그 이면에는 끝없는 전장의 피로와 폭주에 대한 공포가 도사리고 있다. 동료와 인류를 지키기 위해 기꺼이 살을 맞대고 향을 섞으며 피어나는, 애틋하고 절박한 텐션이 이 세계 전체에 짙게 깔려 있다.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="system">
+    <div class="sec-head reveal">
+      <div class="eyebrow">WORLD FILE · 02</div>
+      <h2>시스템 — 페로몬과 가이딩</h2>
+      <p>이 세계의 모든 유대와 위기는 '향(嗅)'으로 시작해서 향으로 끝난다.</p>
+    </div>
+    <div class="system-grid">
+      <div class="sys-card reveal">
+        <div class="code">SYS-01 · PHEROMONE</div>
+        <h3>페로몬</h3>
+        <p>가이딩 파장은 철저히 후각, 즉 페로몬으로 발현된다. 센티넬은 능력을 사용할수록 그 속성을 닮은 향을 뿜어내며, 향이 짙어질수록 능력이 과부하되고 있다는 위험 신호다.</p>
+      </div>
+      <div class="sys-card reveal">
+        <div class="code">SYS-02 · GUIDING</div>
+        <h3>가이딩</h3>
+        <p>물리적 접촉을 통해 센티넬의 불안정한 능력 파장을 감싸 안정시키는 행위. 가이드의 페로몬이 섞여 들어가며 공격적인 향을 중화시키고, 이때 센티넬은 극상의 안정감과 쾌감을 느낀다.</p>
+      </div>
+      <div class="sys-card reveal">
+        <div class="code">SYS-03 · RAMPAGE</div>
+        <h3>폭주</h3>
+        <p>센티넬이 한계치를 넘어서면 능력이 폭주하여 주변을 파괴하는 재앙이 발생한다. 페로몬이 공간을 장악할 만큼 짙어지며, 이지스는 이를 막기 위해 총력을 다한다.</p>
+      </div>
+      <div class="sys-card reveal">
+        <div class="code">SYS-04 · SUPPRESSANT</div>
+        <h3>비상 억제제</h3>
+        <p>이지스 연구국이 배급하는 응급 처치제. 복용 시 파장을 일시적으로 억눌러 폭주를 늦추지만 감정 둔화 등의 부작용이 있어, 근본적인 안정을 위해서는 가이딩이 필수적이다.</p>
+      </div>
+      <div class="sys-card wide reveal">
+        <div class="code">SYS-05 · IMPRINTING</div>
+        <h3>각인 시스템</h3>
+        <p>파장을 완전히 동기화하기 위해 센티넬이 가이드에게 자신의 향을 새겨 넣는 결속 행위. 깊이에 따라 두 단계로 나뉜다.</p>
+        <div class="imprint-split">
+          <div>
+            <h4>TEMPORARY — 임시 각인</h4>
+            <p>센티넬이 파트너 가이드의 페로몬 샘(주로 목덜미)에 자신의 향을 남겨 파장을 연결하는 행위. 시간이 지나면 자연스럽게 옅어진다.</p>
+          </div>
+          <div>
+            <h4>PERMANENT — 영구 각인</h4>
+            <p>센티넬이 가이드의 페로몬 샘을 직접 물어 피와 파장을 깊게 섞는 행위. 완벽한 동기화를 이루지만, 각인된 가이드는 다른 센티넬의 가이딩에 극심한 거부감을 느끼며 각인된 센티넬 역시 그 가이드의 가이딩만 받을 수 있다. 대상이 죽어야만 끊기는 결속이다.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="gate">
+    <div class="sec-head reveal">
+      <div class="eyebrow">WORLD FILE · 03</div>
+      <h2>게이트 공략 규칙</h2>
+      <p>모든 게이트는 같은 방식으로만 닫힌다 — 가장 깊은 곳까지 들어가, 가장 위험한 것과 마주하는 것.</p>
+    </div>
+    <div class="system-grid">
+      <div class="sys-card reveal">
+        <div class="code">GATE-01 · THE BOSS</div>
+        <h3>핵심 변이체</h3>
+        <p>게이트 내부 최심부에는 반드시 '핵심 변이체(보스)'가 존재하며, 이를 처치해야만 게이트가 클리어된다. 보스전은 대원들의 극한의 능력을 요구하기 때문에, 동료 간의 굳건한 백업과 그 순간의 즉각적인 가이딩 없이는 결코 살아남을 수 없다.</p>
+      </div>
+      <div class="sys-card reveal">
+        <div class="code">GATE-02 · REGIONAL CONCEPT</div>
+        <h3>지역 반영</h3>
+        <p>게이트 내부의 환경과 변이체들은 그것이 생성된 지역의 특성을 기괴하게 비틀어 투영한다. 도심에서 열린 게이트는 무너진 빌딩숲으로, 항구에서 열린 게이트는 익사체로 가득한 심해로 — 익숙한 풍경이 낯선 재앙으로 뒤바뀐 모습을 하고 있다.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="ranks">
+    <div class="sec-head reveal">
+      <div class="eyebrow">WORLD FILE · 04</div>
+      <h2>등급 체계</h2>
+      <p>센티넬은 파괴력으로, 가이드는 페로몬의 선명도로 등급이 나뉜다.</p>
+    </div>
+    <div class="rank-cols">
+      <div class="reveal">
+        <div class="rank-col-title">Sentinel Ranks</div>
+        <div class="rank-row">
+          <div class="rank-badge">SS</div>
+          <div>
+            <div class="rank-bar-wrap"><div class="rank-bar" style="width:100%"></div></div>
+            <p>최초의 각성자 5인에게 부여된 등급. 순리를 거스를 만큼 강한 힘을 지녔으며, 그만큼 반작용도 강하다.</p>
+          </div>
+        </div>
+        <div class="rank-row">
+          <div class="rank-badge">S</div>
+          <div>
+            <div class="rank-bar-wrap"><div class="rank-bar" style="width:78%"></div></div>
+            <p>자연재해급 파괴력. 이지스의 든든한 최고 전력.</p>
+          </div>
+        </div>
+        <div class="rank-row">
+          <div class="rank-badge">A~B</div>
+          <div>
+            <div class="rank-bar-wrap"><div class="rank-bar" style="width:52%"></div></div>
+            <p>이지스의 주력 전투 요원.</p>
+          </div>
+        </div>
+        <div class="rank-row">
+          <div class="rank-badge">C~D</div>
+          <div>
+            <div class="rank-bar-wrap"><div class="rank-bar" style="width:26%"></div></div>
+            <p>보조 전력 및 현장 지원 요원.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="reveal">
+        <div class="rank-col-title">Guide Ranks — 페로몬 선명도</div>
+        <div class="rank-row">
+          <div class="rank-badge">SS</div>
+          <div>
+            <div class="rank-bar-wrap"><div class="rank-bar" style="width:100%"></div></div>
+            <p>광범위 방사 가이딩 가능. 최초의 각성자 5인에게 부여된 등급으로, 순리를 거스를 만큼 강한 반작용을 감내한다.</p>
+          </div>
+        </div>
+        <div class="rank-row">
+          <div class="rank-badge">S</div>
+          <div>
+            <div class="rank-bar-wrap"><div class="rank-bar" style="width:78%"></div></div>
+            <p>방사 가이딩 가능. 직접적인 접촉 없이도 공기 중으로 페로몬을 넓게 펼쳐 공간 내 아군 센티넬을 보호·안정시킨다.</p>
+          </div>
+        </div>
+        <div class="rank-row">
+          <div class="rank-badge">A~B</div>
+          <div>
+            <div class="rank-bar-wrap"><div class="rank-bar" style="width:52%"></div></div>
+            <p>이지스의 주력 가이드. 손잡기, 포옹 등 지속적인 스킨십으로 체온을 나누며 파장을 중화한다.</p>
+          </div>
+        </div>
+        <div class="rank-row">
+          <div class="rank-badge">C~D</div>
+          <div>
+            <div class="rank-bar-wrap"><div class="rank-bar" style="width:26%"></div></div>
+            <p>향이 은은하여 점막 접촉이나 보다 짙은 물리적 접촉을 통해서만 파장을 나눌 수 있다.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="divisions">
+    <div class="sec-head reveal">
+      <div class="eyebrow">WORLD FILE · 05</div>
+      <h2>이지스 본부 &amp; 4개 부서</h2>
+      <p>계급이 아닌 역할로 나뉜 4개의 독립 부서가, 서로를 존중하며 유기적으로 협력한다.</p>
+    </div>
+
+    <div class="hq-block reveal">
+      <h3>이지스 중앙 본부 · Aegis Headquarters</h3>
+      <p>5인의 수장이 이끄는, 인류 최후의 안전지대. 첨단 설비를 갖춘 쾌적한 건축물 곳곳에 백야(White Night)의 SS급 방사 가이딩 결계가 은은하게 스며 있어, 본부 안에서는 센티넬이 능력을 과하게 사용해도 쉽게 폭주하지 않는다.</p>
+    </div>
+
+    <div class="division-grid">
+      <div class="div-card reveal" style="--accent:var(--c-tempest)">
+        <div class="div-name">레버넌트<span class="div-name-en">Revenant</span></div>
+        <div class="div-chief">수장 · 템페스트</div>
+        <p class="div-desc">재앙의 진원지에 가장 먼저 뛰어들어 게이트를 파괴하고 시민을 구출하는, 이지스의 방패이자 검.</p>
+        <ul>
+          <li>정예부대 — S~A급 고위험 게이트 전담</li>
+          <li>전술지원대 — 대피·진압 백업</li>
+          <li>계급 : 팀장 &gt; 부팀장 &gt; 요원</li>
+        </ul>
+        <div class="div-env">출동을 준비하는 활기와, 서로의 안전을 기원하며 나누는 짧은 가이딩이 오가는 뜨거운 전우애의 공간.</div>
+      </div>
+
+      <div class="div-card reveal" style="--accent:var(--c-requiem)">
+        <div class="div-name">오라클<span class="div-name-en">Oracle</span></div>
+        <div class="div-chief">수장 · 레퀴엠</div>
+        <p class="div-desc">게이트 정보를 수집하고, 폭주 위기에 처한 각성자를 최우선으로 구조·보호하는 메인 허브.</p>
+        <ul>
+          <li>정보팀 — 실시간 데이터·안전 경로 제공</li>
+          <li>특수구조대 — 폭주 징후 요원 생포·진압</li>
+          <li>계급 : 팀장 &gt; 부팀장 &gt; 요원</li>
+        </ul>
+        <div class="div-env">긴박한 무전 소리와 모니터 불빛이 가득한 관제실.</div>
+      </div>
+
+      <div class="div-card reveal" style="--accent:var(--c-architect)">
+        <div class="div-name">포지<span class="div-name-en">The Forge</span></div>
+        <div class="div-chief">수장 · 아키텍트</div>
+        <p class="div-desc">완벽한 억제제를 연구하고, 아군을 지킬 첨단 장비를 기밀리에 개발하는 학술 기관.</p>
+        <ul>
+          <li>신약개발부 — 부작용 없는 차세대 안정제</li>
+          <li>장비개발부 — 보호 수트·제어 장치</li>
+          <li>계급 : 팀장 &gt; 책임연구원 &gt; 연구원</li>
+        </ul>
+        <div class="div-env">밤낮없이 매달리는 연구원들의 열기와, 실험실 특유의 화학 약품 냄새.</div>
+      </div>
+
+      <div class="div-card reveal" style="--accent:var(--c-white)">
+        <div class="div-name">크래들<span class="div-name-en">The Cradle</span></div>
+        <div class="div-chief">수장 · 백야</div>
+        <p class="div-desc">전장에서 넝마가 된 요원들을 외부 위협으로부터 차단하고 치유하는 이지스의 의료국.</p>
+        <ul>
+          <li>파장 치유센터 — 육체와 파장의 회복</li>
+          <li>계급 : 팀장 &gt; 부팀장 &gt; 요원</li>
+        </ul>
+        <div class="div-env">따스한 햇살과 소독약 냄새, 그리고 긴장을 풀어주는 가이드들의 페로몬이 가득한 치유의 공간.</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="founders">
+    <div class="sec-head reveal">
+      <div class="eyebrow">WORLD FILE · 06</div>
+      <h2>최초의 각성자 5인</h2>
+      <p>본명은 기밀. 오직 이명으로만 불리는, 전원 SS급의 창설자들. 최초의 게이트가 열리던 날, 이 다섯 명은 각자의 힘을 숨기는 대신 방벽이 되기를 택했다 — 그 선택이 지금의 이지스가 되었다.</p>
+    </div>
+    <div class="founder-grid">
+
+      <div class="founder-card reveal" style="--accent:var(--c-abyss)">
+        <div class="aura">
+          <span class="ring r1"></span><span class="ring r2"></span><span class="ring r3"></span>
+          <svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="3.5" fill="var(--c-abyss)" stroke="none"/><circle cx="24" cy="24" r="11"/><circle cx="24" cy="24" r="18" opacity="0.5"/></svg>
+        </div>
+        <div class="founder-code">심연<span class="founder-code-en">The Abyss</span></div>
+        <div class="founder-role">총사령관 · 센티넬</div>
+        <div class="founder-ability">중력</div>
+        <div class="founder-scent">심해처럼 깊고 묵직한 향</div>
+        <p class="founder-blurb">어떠한 재앙 앞에서도 무너지지 않는, 굳건한 수호의 의지.</p>
+      </div>
+
+      <div class="founder-card reveal" style="--accent:var(--c-tempest)">
+        <div class="aura">
+          <span class="ring r1"></span><span class="ring r2"></span><span class="ring r3"></span>
+          <svg viewBox="0 0 48 48"><polyline points="27,4 15,26 23,26 19,44 35,20 27,20" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="founder-code">템페스트<span class="founder-code-en">Tempest</span></div>
+        <div class="founder-role">레버넌트 수장 · 센티넬</div>
+        <div class="founder-ability">뇌전</div>
+        <div class="founder-scent">찌릿한 오존과 비 냄새</div>
+        <p class="founder-blurb">가장 신속하고 파괴적인 타격으로 전선을 뚫어내는 화력.</p>
+      </div>
+
+      <div class="founder-card reveal" style="--accent:var(--c-requiem)">
+        <div class="aura">
+          <span class="ring r1"></span><span class="ring r2"></span><span class="ring r3"></span>
+          <svg viewBox="0 0 48 48"><path d="M6 24C13 14 35 14 42 24C35 34 13 34 6 24Z"/><circle cx="24" cy="24" r="5"/></svg>
+        </div>
+        <div class="founder-code">레퀴엠<span class="founder-code-en">Requiem</span></div>
+        <div class="founder-role">오라클 수장 · 센티넬</div>
+        <div class="founder-ability">감각 지배</div>
+        <div class="founder-scent">차분한 숲과 풀내음(만드라고라)</div>
+        <p class="founder-blurb">위기에 처한 각성자를 고통 없이 안정시키는 비살상 제압의 전문가.</p>
+      </div>
+
+      <div class="founder-card reveal" style="--accent:var(--c-architect)">
+        <div class="aura">
+          <span class="ring r1"></span><span class="ring r2"></span><span class="ring r3"></span>
+          <svg viewBox="0 0 48 48"><polygon points="24,5 40,14.5 40,33.5 24,43 8,33.5 8,14.5"/><line x1="24" y1="14" x2="24" y2="34"/><line x1="16" y1="19" x2="32" y2="29"/><line x1="32" y1="19" x2="16" y2="29"/></svg>
+        </div>
+        <div class="founder-code">아키텍트<span class="founder-code-en">Architect</span></div>
+        <div class="founder-role">포지 수장 · 센티넬</div>
+        <div class="founder-ability">금속 조작</div>
+        <div class="founder-scent">서늘하고 깨끗한 메탈 향</div>
+        <p class="founder-blurb">아군을 보호할 정밀한 무기와 방벽을 세우는 능력.</p>
+      </div>
+
+      <div class="founder-card reveal" style="--accent:var(--c-white)">
+        <div class="aura">
+          <span class="ring r1"></span><span class="ring r2"></span><span class="ring r3"></span>
+          <svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="4"/><line x1="24" y1="6" x2="24" y2="14"/><line x1="24" y1="34" x2="24" y2="42"/><line x1="6" y1="24" x2="14" y2="24"/><line x1="34" y1="24" x2="42" y2="24"/><line x1="11" y1="11" x2="17" y2="17"/><line x1="31" y1="31" x2="37" y2="37"/><line x1="37" y1="11" x2="31" y2="17"/><line x1="17" y1="31" x2="11" y2="37"/></svg>
+        </div>
+        <div class="founder-code">백야<span class="founder-code-en">White Night</span></div>
+        <div class="founder-role">크래들 수장 · 가이드</div>
+        <div class="founder-ability">절대 정화</div>
+        <div class="founder-scent">짙은 새벽안개와 백합 향</div>
+        <p class="founder-blurb">전무후무한 SS급 방사 가이딩으로, 본부 전체를 감싸는 안전망이 되어준다.</p>
+      </div>
+
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="stamp reveal">
+    <div class="eyebrow">END OF FILE</div>
+    <p class="closing">당신의 파장은, 누군가에게는 안식이 된다.</p>
+    <div class="subline">AEGIS ARCHIVE · CLASSIFIED</div>
+  </div>
+</footer>
+
+<script>
+  // scroll reveal
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('is-visible');
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  revealEls.forEach(el => io.observe(el));
+
+  // active nav highlight
+  const navLinks = document.querySelectorAll('.dossier-nav a');
+  const sections = document.querySelectorAll('main section[id]');
+  const navIo = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        navLinks.forEach(l => l.classList.remove('active'));
+        const match = document.querySelector('.dossier-nav a[href="#' + entry.target.id + '"]');
+        if (match) match.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-40% 0px -50% 0px' });
+  sections.forEach(s => navIo.observe(s));
+</script>
+
+</body>
+</html>
